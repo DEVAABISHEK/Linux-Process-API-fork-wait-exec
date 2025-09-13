@@ -24,6 +24,24 @@ Test the C Program for the desired output.
 # PROGRAM:
 
 ## C Program to print process ID and parent Process ID using Linux API system calls
+```
+#include <stdio.h>
+#include <stdlib.h>
+#include <unistd.h>
+
+int main() {
+    int pid = fork();
+
+    if (pid == 0) { 
+        printf("I am child, my PID is %d\n", getpid()); 
+        printf("My parent PID is: %d\n", getppid()); 
+        sleep(2);  // Keep child alive for verification
+    } else { 
+        printf("I am parent, my PID is %d\n", getpid()); 
+        wait(NULL); 
+    }
+}
+```
 
 
 
@@ -40,7 +58,10 @@ Test the C Program for the desired output.
 
 
 
-##OUTPUT
+
+## OUTPUT
+<img width="625" height="248" alt="ex2" src="https://github.com/user-attachments/assets/d5ac4279-e2fe-4e9e-a810-314e426f2732" />
+
 
 
 
@@ -56,6 +77,48 @@ Test the C Program for the desired output.
 
 
 ## C Program to create new process using Linux API system calls fork() and exit()
+```
+#include <stdio.h>
+#include <stdlib.h>
+#include <sys/types.h>
+#include <sys/wait.h>
+#include <unistd.h>
+
+int main() {
+    int status;
+    
+    printf("Running ps with execl\n");
+    if (fork() == 0) {
+        execl("ps", "ps", "-f", NULL);
+        perror("execl failed");
+        exit(1);
+    }
+    wait(&status);
+    
+    if (WIFEXITED(status)) {
+        printf("Child exited with status: %d\n", WEXITSTATUS(status));
+    } else {
+        printf("Child did not exit successfully\n");
+    }
+    
+    printf("Running ps with execlp (without full path)\n");
+    if (fork() == 0) {
+        execlp("ps", "ps", "-f", NULL);
+        perror("execlp failed");
+        exit(1);
+    }
+    wait(&status);
+    
+    if (WIFEXITED(status)) {
+        printf("Child exited for execlp with status: %d\n", WEXITSTATUS(status));
+    } else {
+        printf("Child did not exit successfully\n");
+    }
+    
+    printf("Done.\n");
+    return 0;
+}
+```
 
 
 
@@ -69,7 +132,10 @@ Test the C Program for the desired output.
 
 
 
-##OUTPUT
+
+## OUTPUT
+<img width="521" height="228" alt="ex2" src="https://github.com/user-attachments/assets/418b74ef-f4e3-410f-9854-593febc04aeb" />
+
 
 
 
